@@ -11,3 +11,28 @@ user = User.create(
   email: "admin@example.com",
   email_verified: true
 )
+
+employer = Employer.create(
+  name: "Toys R Us",
+  industry: "Retail"
+)
+
+career = Career.create(
+  title: "Retail"
+)
+
+user_career = UserCareer.create(
+  user: user,
+  career: career
+)
+
+employment = Employment.create(
+  title: "Cashier",
+  start_date: "26 Nov 2008".to_date,
+  end_date: "3 Jan 2009".to_date,
+  starting_pay: 8.to_d,
+  ending_pay: 8.to_d,
+  user: user,
+  employer: employer,
+  user_career: user_career
+)

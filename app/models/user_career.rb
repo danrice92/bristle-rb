@@ -3,4 +3,6 @@ class UserCareer < ApplicationRecord
   belongs_to :career
 
   has_many :employments
+
+  delegate :title, to: :career
 end
