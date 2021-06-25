@@ -36,3 +36,16 @@ employment = Employment.create(
   employer: employer,
   user_career: user_career
 )
+
+location = Location.create(
+  address: "123 Example Road",
+  city: "Fort Collins",
+  state: "CO",
+  zipcode: "80528",
+  country: "USA"
+)
+
+employer_location = EmployerLocation.create(
+  employer: employer,
+  location: location
+)
