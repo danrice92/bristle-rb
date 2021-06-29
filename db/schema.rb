@@ -22,6 +22,15 @@ ActiveRecord::Schema.define(version: 2021_06_20_211357) do
     t.index ["title"], name: "index_careers_on_title", unique: true
   end
 
+  create_table "employer_locations", force: :cascade do |t|
+    t.bigint "employer_id"
+    t.bigint "location_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["employer_id"], name: "index_employer_locations_on_employer_id"
+    t.index ["location_id"], name: "index_employer_locations_on_location_id"
+  end
+
   create_table "employers", force: :cascade do |t|
     t.string "name"
     t.string "industry"
@@ -54,18 +63,12 @@ ActiveRecord::Schema.define(version: 2021_06_20_211357) do
     t.string "state"
     t.string "zipcode"
     t.string "country"
-    t.bigint "user_id"
-    t.bigint "employer_id"
-    t.bigint "employment_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["address"], name: "index_locations_on_address"
     t.index ["city"], name: "index_locations_on_city"
     t.index ["country"], name: "index_locations_on_country"
-    t.index ["employer_id"], name: "index_locations_on_employer_id"
-    t.index ["employment_id"], name: "index_locations_on_employment_id"
     t.index ["state"], name: "index_locations_on_state"
-    t.index ["user_id"], name: "index_locations_on_user_id"
     t.index ["zipcode"], name: "index_locations_on_zipcode"
   end
 
@@ -76,6 +79,15 @@ ActiveRecord::Schema.define(version: 2021_06_20_211357) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["career_id"], name: "index_user_careers_on_career_id"
     t.index ["user_id"], name: "index_user_careers_on_user_id"
+  end
+
+  create_table "user_locations", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "location_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["location_id"], name: "index_user_locations_on_location_id"
+    t.index ["user_id"], name: "index_user_locations_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

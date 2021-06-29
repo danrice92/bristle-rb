@@ -52,9 +52,19 @@ class CreateInitialTables < ActiveRecord::Migration[6.1]
       t.string :zipcode, index: true
       t.string :country, index: true
 
-      t.belongs_to :user, optional: true
-      t.belongs_to :employer, optional: true
-      t.belongs_to :employment, optional: true
+      t.timestamps
+    end
+
+    create_table :user_locations do |t|
+      t.belongs_to :user, index: true
+      t.belongs_to :location, index: true
+
+      t.timestamps
+    end
+
+    create_table :employer_locations do |t|
+      t.belongs_to :employer, index: true
+      t.belongs_to :location, index: true
 
       t.timestamps
     end
