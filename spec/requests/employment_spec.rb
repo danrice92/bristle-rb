@@ -19,7 +19,7 @@ describe "GET #index /employments" do
         starting_pay: employment.starting_pay,
         ending_pay: employment.ending_pay,
         career_title: employment.career.title,
-        location: employment.locations.first
+        location: employment.location
       },
       {
         job_title: second_employment.title,
@@ -29,7 +29,7 @@ describe "GET #index /employments" do
         starting_pay: second_employment.starting_pay,
         ending_pay: second_employment.ending_pay,
         career_title: second_employment.career.title,
-        location: second_employment.locations.first
+        location: second_employment.location
       }
     ]}.to_json)
   end

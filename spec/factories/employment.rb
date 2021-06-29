@@ -9,5 +9,6 @@ FactoryBot.define do
     user
     employer
     user_career
+    location
   end
 end

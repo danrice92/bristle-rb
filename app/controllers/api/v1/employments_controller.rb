@@ -10,7 +10,7 @@ module API::V1
           starting_pay: employment.starting_pay,
           ending_pay: employment.ending_pay,
           career_title: employment.career.title,
-          location: employment.locations.first
+          location: employment.location
         }
       end
       render json: {employments: employments}

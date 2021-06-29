@@ -1,4 +1,6 @@
 class Location < ApplicationRecord
+  belongs_to :employment
+
   has_many :employer_locations
   has_many :employers, through: :employer_locations
 
