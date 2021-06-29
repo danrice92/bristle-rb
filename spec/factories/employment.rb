@@ -6,8 +6,14 @@ FactoryBot.define do
     starting_pay { 12.to_d }
     ending_pay { 15.to_d }
 
-    user
     employer
+    user
     user_career
+  end
+
+  after :create do |employment|
+    if employment.is_a? Employment
+      create(:employment_location, employment: employment)
+    end
   end
 end

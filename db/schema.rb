@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_20_211357) do
+ActiveRecord::Schema.define(version: 2021_06_29_194142) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,15 @@ ActiveRecord::Schema.define(version: 2021_06_20_211357) do
     t.index ["name"], name: "index_employers_on_name"
   end
 
+  create_table "employment_locations", force: :cascade do |t|
+    t.bigint "employment_id"
+    t.bigint "location_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["employment_id"], name: "index_employment_locations_on_employment_id"
+    t.index ["location_id"], name: "index_employment_locations_on_location_id"
+  end
+
   create_table "employments", force: :cascade do |t|
     t.string "title"
     t.date "start_date"
@@ -50,6 +59,7 @@ ActiveRecord::Schema.define(version: 2021_06_20_211357) do
     t.bigint "user_career_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "primary_location_id"
     t.index ["employer_id"], name: "index_employments_on_employer_id"
     t.index ["title"], name: "index_employments_on_title"
     t.index ["user_career_id"], name: "index_employments_on_user_career_id"
