@@ -4,13 +4,13 @@ module API::V1
       employments = Employment.all.includes(:user, :user_career, :employer).map do |employment|
         {
           job_title: employment.title,
-          employer_name: employment.employer.name,
+          employer_name: employment.employer_name,
           start_date: employment.start_date,
           end_date: employment.end_date,
           starting_pay: employment.starting_pay,
           ending_pay: employment.ending_pay,
           career_title: employment.career.title,
-          location: employment.location
+          location: employment.primary_location
         }
       end
       render json: {employments: employments}
