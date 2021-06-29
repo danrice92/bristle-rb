@@ -12,4 +12,4 @@
 
 - [ ] New behavior is tested
 - [ ] Migrations have been run on all deployments
-- [ ] Documentation has been updated to encapsulate new behavior
+- [ ] Documentation is up-to-date
