@@ -9,4 +9,9 @@ class User < ApplicationRecord
   has_many :locations, through: :user_locations
 
   validates_presence_of :email
+  validate :email
+  validates :email, format: {
+    with: /\A[\w\+\-\.]+@([\w\+\-\.]+\.[\w\+\-\.]+)+\z/,
+    message: "must be a valid email address"
+  }
 end

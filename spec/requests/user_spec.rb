@@ -3,6 +3,16 @@ require "rails_helper"
 describe "/user" do
   let(:email) { "newaccount@example.com" }
 
+  def user_error error_array
+    {
+      user: {
+        errors: {
+          email: error_array
+        }
+      }
+    }
+  end
+
   context "POST #create" do
     it "allows the user to create an account by providing their email" do
       post "/api/v1/users", params: {user: {email: email}}
@@ -19,15 +29,23 @@ describe "/user" do
 
       expect(response.content_type).to eq("application/json; charset=utf-8")
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.body).to eq({user: {errors: {email: ["is already taken"]}}}.to_json)
+      expect(response.body).to eq user_error(["is already taken"]).to_json
     end
-    
-    it "responds with an error if no email is provided" do
+
+    it "responds with errors if the email is blank" do
       post "/api/v1/users", params: {user: {email: ""}}
 
       expect(response.content_type).to eq("application/json; charset=utf-8")
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.body).to eq({user: {errors: {email: ["can't be blank"]}}}.to_json)
+      expect(response.body).to eq user_error(["can't be blank", "must be a valid email address"]).to_json
+    end
+
+    it "responds with an error if the value does not look like an email" do
+      post "/api/v1/users", params: {user: {email: "yodawg"}}
+
+      expect(response.content_type).to eq("application/json; charset=utf-8")
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.body).to eq user_error(["must be a valid email address"]).to_json
     end
   end
 end
