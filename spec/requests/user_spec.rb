@@ -4,13 +4,7 @@ describe "/user" do
   let(:email) { "newaccount@example.com" }
 
   def user_error error_array
-    {
-      user: {
-        errors: {
-          email: error_array
-        }
-      }
-    }
+    {errors: error_array}
   end
 
   context "POST #create" do
@@ -29,7 +23,7 @@ describe "/user" do
 
       expect(response.content_type).to eq("application/json; charset=utf-8")
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.body).to eq user_error(["is already taken"]).to_json
+      expect(response.body).to eq user_error(["Email is already taken"]).to_json
     end
 
     it "responds with errors if the email is blank" do
@@ -37,7 +31,7 @@ describe "/user" do
 
       expect(response.content_type).to eq("application/json; charset=utf-8")
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.body).to eq user_error(["can't be blank", "must be a valid email address"]).to_json
+      expect(response.body).to eq user_error(["Email can't be blank", "Email must be a valid email address"]).to_json
     end
 
     it "responds with an error if the value does not look like an email" do
@@ -45,7 +39,7 @@ describe "/user" do
 
       expect(response.content_type).to eq("application/json; charset=utf-8")
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.body).to eq user_error(["must be a valid email address"]).to_json
+      expect(response.body).to eq user_error(["Email must be a valid email address"]).to_json
     end
   end
 end

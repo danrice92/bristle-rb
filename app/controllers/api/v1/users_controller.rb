@@ -5,8 +5,7 @@ module API::V1
 
       begin
         if user.save
-          response.status = :created
-          render json: {user: user}
+          render json: {user: user}, status: :created
         else
           respond_with_errors(user.errors.messages)
         end
@@ -22,9 +21,11 @@ module API::V1
       params.require(:user).permit(:email)
     end
 
-    def respond_with_errors errors
-      response.status = :unprocessable_entity
-      render json: {user: {errors: errors}}
+    def respond_with_errors error_hash
+      errors = error_hash.flat_map do |key, error_array|
+        error_array.map { |error| "#{key.capitalize} #{error}" }
+      end
+      render json: {errors: errors}, status: :unprocessable_entity
     end
   end
 end
