@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "User API" do
+describe "User API", :focus do
   context "POST #create" do
     let(:first_name) { "Daniel" }
     let(:last_name) { "Rice" }
