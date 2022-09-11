@@ -17,13 +17,9 @@ Ensure that you have the following technologies installed on your machine and th
 * `git clone git@github.com:danrice92/bristle-rb.git`
 * `rbenv install 2.6.8`
 * `gem install bundler`
+* I recommend using the [Postgres app](https://postgresapp.com/), rather than Homebrew, for installing Postgres. Add this to your PATH: `export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"`. This will make the `pg` gem install correctly.
 * `bundle`
 * `bin/rails db:setup`
-
-## Installation - Apple Silicon
-
-* Follow [this blog's steps](https://soffes.blog/homebrew-on-apple-silicon) to install Intel and Apple versions of Homebrew and use the "ibrew" alias below. OpenSSL must be installed using ibrew.
-* `RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(ibrew --prefix openssl)" arch -x86_64 rbenv install 3.0.1` - Install Ruby 3.0.1 using the ibrew alias.
 
 ## Start the server
 
