@@ -17,7 +17,7 @@ Ensure that you have the following technologies installed on your machine and th
 * `git clone git@github.com:danrice92/bristle-rb.git`
 * `rbenv install 2.6.8`
 * `gem install bundler`
-* With ARM Macs, I recommend using the [Postgres app](https://postgresapp.com/), and adding this to your PATH in `.zshrc`: `export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"`. This will make the `pg` gem install correctly.
+* I recommend using the [Postgres app](https://postgresapp.com/), rather than Homebrew, for installing Postgres. Add this to your PATH: `export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"`. This will make the `pg` gem install correctly.
 * `bundle`
 * `bin/rails db:setup`
 
