@@ -4,9 +4,16 @@ module API::V1
       @user = User.create user_params
 
       if @user.persisted?
-        render json: @user.as_json
+        render json: {
+          user: {
+            id: @user.id,
+            email: @user.email,
+            first_name: @user.first_name,
+            last_name: @user.last_name
+          }
+        }
       else
-        render json: @user.errors
+        render json: {errors: @user.errors}
       end
     end
 
