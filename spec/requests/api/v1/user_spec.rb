@@ -46,6 +46,17 @@ describe "User API" do
       expect(Time.at(decoded_token[:expiration]).day).to eq Time.now.day
       expect(Time.at(decoded_token[:expiration]).year).to eq Time.now.year + 1
     end
+
+    it "sends an email with the verification code" do
+      mail_deliveries = ActionMailer::Base.deliveries.count
+      sign_up(correct_user_params, 1)
+      last_email = ActionMailer::Base.deliveries.last
+
+      expect(ActionMailer::Base.deliveries.count).to eq mail_deliveries + 1
+      expect(last_email.from).to eq ["no-reply@bristle.work"]
+      expect(last_email.to).to eq [email]
+      expect(last_email.subject).to eq "Welcome to Bristle!"
+      expect(last_email.html_part.body.raw_source).to include @user.verification_code
     end
 
     it "errors when no email is provided" do

@@ -23,6 +23,7 @@ module API::V1
       @user = User.create user_params
 
       if @user.persisted?
+        UserMailer.with(user: @user).verify_email.deliver_now
         render json: {
           user: {
             id: @user.id,
