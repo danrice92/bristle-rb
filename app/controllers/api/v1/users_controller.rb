@@ -1,24 +1,5 @@
 module API::V1
   class UsersController < APIController
-    def index
-      @user = User.first
-      render json: {
-        user: {
-          id: @user.id,
-          authentication_token: @user.encode_json_web_token,
-          email: @user.email,
-          email_verified: @user.email_verified,
-          first_name: @user.first_name,
-          last_name: @user.last_name
-        }
-      }
-    end
-
-    def show
-      @user = User.find(params[:id])
-      render json: {user: @user}
-    end
-
     def create
       @user = User.create create_user_params
 
@@ -37,6 +18,11 @@ module API::V1
       else
         render json: {errors: @user.errors}
       end
+    end
+
+    def show
+      @user = User.find(params[:id])
+      render json: {user: @user}
     end
 
     def update
