@@ -14,12 +14,11 @@ class User < ApplicationRecord
     save
   end
 
-  def encode_json_web_token expiration:1.year.from_now
-    payload = {user_id: id, expiration: expiration.to_i}
-    JWT.encode(payload, Rails.application.secrets.secret_key_base)
+  def authentication_token expiration:1.year.from_now
+    JWT.encode({user_id: id, expiration: expiration.to_i}, Rails.application.secrets.secret_key_base)
   end
 
   def self.decode_id_from_token token
-    JWT.decode(token, Rails.application.secrets.secret_key_base)[0].with_indifferent_access[:user_id]
+    JWT.decode(token, Rails.application.secrets.secret_key_base)[0]["user_id"]
   end
 end

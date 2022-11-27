@@ -92,11 +92,10 @@ describe "User API" do
 
   context "PUT #update" do
     let(:user) { create(:user, first_name: first_name, last_name: last_name, email: email, email_verified: false) }
-    let(:authentication_token) { user.encode_json_web_token }
 
     it "sets email_verified to true and clears the code when it was correct" do
       put "/api/v1/users/#{user.id}", params: {
-        authentication_token: authentication_token,
+        authentication_token: user.authentication_token,
         user: {verification_code: user.verification_code}
       }
       user.reload
@@ -111,7 +110,7 @@ describe "User API" do
 
     it "errors if the code is incorrect" do
       put "/api/v1/users/#{user.id}", params: {
-        authentication_token: authentication_token,
+        authentication_token: user.authentication_token,
         user: {verification_code: "ABC123"}
       }
       user.reload
@@ -134,12 +133,10 @@ describe "User API" do
 
   context "GET #show" do
     let(:user) { create(:user, first_name: first_name, last_name: last_name, email: email) }
-    let(:users_authentication_token) { user.encode_json_web_token }
     let(:second_user) { create(:user) }
-    let(:second_users_token) { second_user.encode_json_web_token }
 
     it "renders the user when the user is logged in" do
-      get "/api/v1/users/#{user.id}", params: { authentication_token: users_authentication_token }
+      get "/api/v1/users/#{user.id}", params: { authentication_token: user.authentication_token }
       response_body = JSON.parse(response.body).with_indifferent_access[:user]
 
       expect(response.status).to eq 200
@@ -151,7 +148,7 @@ describe "User API" do
     end
 
     it "errors when the current_user ID and the URL ID don't match" do
-      get "/api/v1/users/#{user.id}", params: {authentication_token: second_users_token}
+      get "/api/v1/users/#{user.id}", params: {authentication_token: second_user.authentication_token}
       response_body = JSON.parse(response.body).with_indifferent_access[:errors]
 
       expect(response.status).to eq 403
