@@ -91,21 +91,18 @@ describe "User API" do
   end
 
   context "PUT #update" do
-    let(:user) do
-      create(
-        :user,
-        first_name: first_name,
-        last_name: last_name,
-        email: email,
-        email_verified: false
-      )
-    end
+    let(:user) { create(:user, first_name: first_name, last_name: last_name, email: email, email_verified: false) }
+    let(:authentication_token) { user.encode_json_web_token }
 
     it "sets email_verified to true and clears the code when it was correct" do
-      put "/api/v1/users/#{user.id}", params: {user: {verification_code: user.verification_code}}
+      put "/api/v1/users/#{user.id}", params: {
+        authentication_token: authentication_token,
+        user: {verification_code: user.verification_code}
+      }
       user.reload
       response_body = JSON.parse(response.body).with_indifferent_access[:user]
 
+      expect(response.status).to eq 200
       expect(user.email_verified).to eq true
       expect(user.verification_code).to eq nil
       expect(response_body[:email_verified]).to eq true
@@ -113,13 +110,68 @@ describe "User API" do
     end
 
     it "errors if the code is incorrect" do
-      put "/api/v1/users/#{user.id}", params: {user: {verification_code: "ABC123"}}
+      put "/api/v1/users/#{user.id}", params: {
+        authentication_token: authentication_token,
+        user: {verification_code: "ABC123"}
+      }
       user.reload
-      response_body = JSON.parse(response.body).with_indifferent_access
+      response_body = JSON.parse(response.body).with_indifferent_access[:errors]
 
+      expect(response.status).to eq 200
       expect(user.email_verified).to eq false
       expect(user.verification_code).to_not eq nil
-      expect(response_body[:errors][:verification_code]).to eq(["didn't match"])
+      expect(response_body[:verification_code]).to eq(["didn't match"])
+    end
+
+    it "errors if no authentication token is provided" do
+      put "/api/v1/users/#{user.id}", params: {user: {verification_code: user.verification_code}}
+      response_body = JSON.parse(response.body).with_indifferent_access[:errors]
+
+      expect(response.status).to eq 401
+      expect(response_body[:authentication]).to eq ["must provide a valid authentication token"]
+    end
+  end
+
+  context "GET #show" do
+    let(:user) { create(:user, first_name: first_name, last_name: last_name, email: email) }
+    let(:users_authentication_token) { user.encode_json_web_token }
+    let(:second_user) { create(:user) }
+    let(:second_users_token) { second_user.encode_json_web_token }
+
+    it "renders the user when the user is logged in" do
+      get "/api/v1/users/#{user.id}", params: { authentication_token: users_authentication_token }
+      response_body = JSON.parse(response.body).with_indifferent_access[:user]
+
+      expect(response.status).to eq 200
+      expect(response_body[:id]).to eq user.id
+      expect(response_body[:email]).to eq email
+      expect(response_body[:email_verified]).to eq true
+      expect(response_body[:first_name]).to eq first_name
+      expect(response_body[:last_name]).to eq last_name
+    end
+
+    it "errors when the current_user ID and the URL ID don't match" do
+      get "/api/v1/users/#{user.id}", params: {authentication_token: second_users_token}
+      response_body = JSON.parse(response.body).with_indifferent_access[:errors]
+
+      expect(response.status).to eq 403
+      expect(response_body[:authorization]).to eq ["not allowed to perform this action"]
+    end
+
+    it "errors if not authentication token is provided" do
+      get "/api/v1/users/#{user.id}", params: {}
+      response_body = JSON.parse(response.body).with_indifferent_access[:errors]
+
+      expect(response.status).to eq 401
+      expect(response_body[:authentication]).to eq ["must provide a valid authentication token"]
+    end
+
+    it "errors if an invalid authentication token is provided" do
+      get "/api/v1/users/#{user.id}", params: {authentication_token: "ABCDEFG"}
+      response_body = JSON.parse(response.body).with_indifferent_access[:errors]
+
+      expect(response.status).to eq 401
+      expect(response_body[:authentication]).to eq ["must provide a valid authentication token"]
     end
   end
 end
