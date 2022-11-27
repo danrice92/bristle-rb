@@ -1,43 +1,29 @@
 module API::V1
   class UsersController < APIController
-    def create
-      @user = User.create create_user_params
+    skip_before_action :require_login, only: [:create]
 
-      if @user.persisted?
-        UserMailer.with(user: @user).verify_email.deliver_now
-        render json: {
-          user: {
-            id: @user.id,
-            authentication_token: @user.encode_json_web_token,
-            email: @user.email,
-            email_verified: @user.email_verified,
-            first_name: @user.first_name,
-            last_name: @user.last_name
-          }
-        }
+    def create
+      @current_user = User.create create_user_params
+      authorize @current_user
+
+      if @current_user.persisted?
+        UserMailer.with(user: @current_user).verify_email.deliver_now
+        render :create
       else
-        render json: {errors: @user.errors}
+        render json: {errors: @current_user.errors}
       end
     end
 
     def show
-      @user = User.find(params[:id])
-      render json: {user: @user}
+      @user = authorize User.find(params[:id])
+      render :show
     end
 
     def update
-      @user = User.find(params[:id])
+      @user = authorize User.find(params[:id])
 
       if verify_email_params.present? && @user.verify_email!(verify_email_params)
-        render json: {
-          user: {
-            id: @user.id,
-            email: @user.email,
-            email_verified: @user.email_verified,
-            first_name: @user.first_name,
-            last_name: @user.last_name
-          }
-        }
+        render :show
       else
         render json: {errors: {verification_code: ["didn't match"]}}
       end
