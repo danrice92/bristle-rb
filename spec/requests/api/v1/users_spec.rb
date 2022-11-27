@@ -56,7 +56,7 @@ describe "User API" do
         expect(last_email.from).to eq ["no-reply@bristle.work"]
         expect(last_email.to).to eq [email]
         expect(last_email.subject).to eq "Welcome to Bristle!"
-        expect(last_email.html_part.body.raw_source).to include @user.verification_code
+        expect(email_body(last_email)).to include @user.verification_code
       end
     end
 

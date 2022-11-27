@@ -8,6 +8,14 @@ class ApplicationPolicy
     @record = record
   end
 
+  def yes
+    true
+  end
+
+  def no
+    false
+  end
+
   def index?
     false
   end

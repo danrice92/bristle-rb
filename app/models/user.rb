@@ -6,6 +6,11 @@ class User < ApplicationRecord
     self.verification_code = SecureRandom.hex(3).upcase
   end
 
+  def reset_verification_code
+    set_verification_code
+    save
+  end
+
   def verify_email! params
     return false unless verification_code == params[:verification_code].upcase
 
