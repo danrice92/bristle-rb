@@ -19,7 +19,7 @@ class User < ApplicationRecord
     JWT.encode(payload, Rails.application.secrets.secret_key_base)
   end
 
-  def decode_json_web_token token
-    JWT.decode(token, Rails.application.secrets.secret_key_base)
+  def self.decode_id_from_token token
+    JWT.decode(token, Rails.application.secrets.secret_key_base)[0].with_indifferent_access[:user_id]
   end
 end
