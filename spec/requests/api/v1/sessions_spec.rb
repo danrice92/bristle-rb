@@ -15,15 +15,25 @@ describe "Session API" do
     it "sends an email with the new verification code" do
       original_verification_code = user.verification_code
       mail_deliveries = ActionMailer::Base.deliveries.count
+
       post "/api/v1/sessions", params: {session: {email: user.email}}
+      user.reload
       last_email = ActionMailer::Base.deliveries.last
 
-      expect(user.reload.verification_code).to_not eq original_verification_code
+      expect(response.status).to eq 200
+      expect(user.verification_code).to_not eq original_verification_code
       expect(ActionMailer::Base.deliveries.count).to eq mail_deliveries + 1
       expect(last_email.from).to eq ["no-reply@bristle.work"]
       expect(last_email.to).to eq [user.email]
       expect(last_email.subject).to eq "Bristle login attempt"
       expect(email_body(last_email)).to include user.verification_code
+    end
+
+    it "errors when a user with the email was not found" do
+      post "/api/v1/sessions", params: {session: {email: "nope@nope.com"}}
+
+      expect(response.status).to eq 200
+      expect(response_body[:errors][:email]).to eq ["not found"]
     end
   end
 end
