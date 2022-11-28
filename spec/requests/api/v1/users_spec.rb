@@ -59,6 +59,15 @@ describe "User API" do
       end
     end
 
+    context "when the email address is malformed" do
+      it "downcases and strips the email address" do
+        sign_up({first_name: first_name, last_name: last_name, email: "Dan@NovumOpus.com "}, 1)
+        user = User.find_by_first_name(first_name)
+
+        expect(user.email).to eq "dan@novumopus.com"
+      end
+    end
+
     context "when the submission is invalid" do
       it "errors when no email is provided" do
         sign_up({first_name: first_name, last_name: last_name}, 0)
@@ -146,7 +155,7 @@ describe "User API" do
       expect(response_body[:errors][:authorization]).to eq ["not allowed to perform this action"]
     end
 
-    it "errors if not authentication token is provided" do
+    it "errors if no authentication token is provided" do
       get "/api/v1/users/#{user.id}", params: {}
 
       expect(response.status).to eq 401

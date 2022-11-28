@@ -3,7 +3,7 @@ module API::V1
     skip_before_action :require_login, only: [:create]
 
     def create
-      @current_user = User.find_by_email(session_params[:email])
+      @current_user = User.find_by_email(clean_email(session_params[:email]))
 
       if @current_user.blank?
         skip_authorization

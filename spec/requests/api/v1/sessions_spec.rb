@@ -2,7 +2,7 @@ require "rails_helper"
 
 describe "Session API" do 
   context "POST #create" do
-    let(:user) { create(:user, first_name: "Daniel", last_name: "Rice", email: "dan@novumopus.com") }
+    let!(:user) { create(:user, first_name: "Daniel", last_name: "Rice", email: "dan@novumopus.com") }
 
     it "sends an authentication token" do
       post "/api/v1/sessions", params: {session: {email: user.email}}
@@ -27,6 +27,14 @@ describe "Session API" do
       expect(last_email.to).to eq [user.email]
       expect(last_email.subject).to eq "Bristle login attempt"
       expect(email_body(last_email)).to include user.verification_code
+    end
+
+    it "downcases and strips the email" do
+      post "/api/v1/sessions", params: {session: {email: "Dan@NovumOpus.com  "}}
+      expect(response.status).to eq 200
+
+      decoded_id = User.decode_id_from_token(response_body[:user][:authentication_token])
+      expect(decoded_id).to eq user.id
     end
 
     it "errors when a user with the email was not found" do

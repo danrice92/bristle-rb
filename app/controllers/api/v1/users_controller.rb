@@ -3,10 +3,11 @@ module API::V1
     skip_before_action :require_login, only: [:create]
 
     def create
-      @current_user = User.create create_user_params
+      @current_user = User.new create_user_params
+      @current_user.email = clean_email(create_user_params[:email])
       authorize @current_user
 
-      if @current_user.persisted?
+      if @current_user.save
         UserMailer.with(user: @current_user).verify_email.deliver_now
         render :create
       else

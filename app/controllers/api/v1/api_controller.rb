@@ -24,6 +24,10 @@ module API::V1
       end
     end
 
+    def clean_email email
+      email&.downcase&.strip
+    end
+
     private
 
     def user_not_authenticated
