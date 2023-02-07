@@ -3,5 +3,6 @@ json.(user,
   :email,
   :email_verified,
   :first_name,
-  :last_name
+  :last_name,
+  :authentication_token
 )

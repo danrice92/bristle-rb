@@ -2,6 +2,11 @@ module API::V1
   class UsersController < APIController
     skip_before_action :require_login, only: [:create]
 
+    def index
+      authorize @current_user
+      render :show
+    end
+
     def create
       @current_user = User.new create_user_params
       @current_user.email = clean_email(create_user_params[:email])
