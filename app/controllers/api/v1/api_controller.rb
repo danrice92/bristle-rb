@@ -6,7 +6,7 @@ module API::V1
     after_action :verify_authorized
 
     def require_login
-      if params[:authentication_token]
+      if request.headers[:HTTP_AUTHENTICATION_TOKEN]
         current_user
       else
         user_not_authenticated
@@ -17,7 +17,7 @@ module API::V1
       return @current_user if @current_user.present?
 
       begin
-        user_id = User.decode_id_from_token(params[:authentication_token]) 
+        user_id = User.decode_id_from_token(request.headers[:HTTP_AUTHENTICATION_TOKEN]) 
         @current_user = User.find(user_id)
       rescue
         user_not_authenticated
